@@ -1,0 +1,28 @@
+﻿@model LogInCredentials
+
+<div class="container border rounded p-3 col-lg-5">
+    <legend>Log in to your account!</legend>
+    <hr />
+    <form method="post" asp-action="Login">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <!-- Username field-->
+        <div class="form-group col mb-3 p-1">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <!-- Password field-->
+        <div class="form-group col mb-3 p-1">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary form-control">Log In</button>
+    </form>
+    <div class="mt-3">
+        Don't have an account yet? <a asp-area="" asp-controller="Account" asp-action="Register">Sign up!</a>
+    </div>
+</div>

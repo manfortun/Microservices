@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="container p-3 row d-flex flex-lg-row" id="parentContainer">
+</div>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script>
+
+        window.onload = function () {
+            getPurchases();
+        }
+
+        function getPurchases() {
+            console.log('Obtaining purchases...');
+
+            $.ajax({
+                url: '/Basket/GetCarts',
+                type: 'GET',
+                success: function (result) {
+                    console.log('Purchases obtained.');
+                    $('#parentContainer').html(result);
+                },
+                error: function () {
+                    console.log('Failed in obtaining purchases.');
+                }
+            });
+        }
+
+        function toggleEditMode(mode, save) {
+            $.ajax({
+                url: '/Basket/ToggleEditMode',
+                type: 'GET',
+                data: { onEditMode: mode, save: save },
+                success: function (result) {
+                    $('#parentContainer').html(result);
+                },
+                error: function () {
+                    console.log('An error occured.');
+                }
+            });
+        }
+
+        function modifyCountClicked(productId, ownerId, amount) {
+            $.ajax({
+                url: '/Basket/ChangeCount',
+                type: 'GET',
+                data: { productId: productId, ownerId: ownerId, count: amount },
+                success: function (result) {
+                    $('#parentContainer').html(result);
+                },
+                error: function () {
+                    console.log('Error in editing count.');
+                }
+            });
+        }
+
+        function checkout() {
+            $.ajax({
+                url: '/Basket/Checkout',
+                type: 'GET',
+                success: function (result) {
+                    toastr.success('Basket checked out.');
+                    $('#parentContainer').html(result);
+                },
+                error: function () {
+                    console.log('Error in checkout.');
+                }
+            });
+        }
+    </script>
+}

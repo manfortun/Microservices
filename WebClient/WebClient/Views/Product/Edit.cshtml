@@ -1,0 +1,120 @@
+﻿@model ProductDto
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<div class="container col-md-6 col-lg-5 mt-3">
+    <form class="border p-3" method="post" id="formData" value="@Model.Id">
+        <legend>@ViewData["Title"]</legend>
+        <hr />
+
+        <input asp-for="Id" id="modelId" hidden />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mx-auto d-block m-3 position-relative" style="height: 200px; width: 200px;">
+            <img class="card-img" height="150px" style="object-fit:cover;" id="imageSourceImg" src="@(string.IsNullOrEmpty(Model.ImageSource) ? "~/images/no-image.jpg" : Model.ImageSource)" asp-append-version="true" />
+            <label for="imageSourceInput" class="btn btn-light border position-absolute bottom-0 end-0" style="display: inline-block;cursor: pointer;border-radius: 4px;">
+                <i class="bi bi-pencil"></i>
+            </label>
+            <input type="file" name="file" id="imageSourceInput" oninput="setImageSource()" hidden />
+            <input asp-for="ImageSource" id="imageSourceBind" hidden />
+            <button type="submit" asp-action="changeimage" id="submitImageBtn" hidden></button>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Name" class="form-control" />
+            <label asp-for="Name"></label>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Price" class="form-control" type="number" />
+            <label asp-for="Price"></label>
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Description" class="form-control" />
+            <label asp-for="Description"></label>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <label>Categories</label>
+        <div class="input-group mb-3" style="width: 100%" id="categoryToggler"></div>
+
+        <div class="d-grid gap-2 d-xl-flex flex-row-reverse justify-content-xl-start">
+            <button class="btn btn-primary ml-md-auto ps-5 pe-5" type="submit">Save</button>
+            <a class="btn btn-outline-secondary ml-md-auto ps-5 pe-5" href="/Home/Index">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+    <script>
+
+        $(document).ready(function () {
+            var id = @Model.Id;
+
+            $.ajax({
+                url: '/Product/GetCategories',
+                type: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    console.log('Obtained the category toggler.')
+                    $('#categoryToggler').html(result);
+                },
+                error: function () {
+                    console.log('Unable to obtain the category toggler.');
+                }
+            });
+        })
+
+        function setImageSource() {
+            var fileInput = document.getElementById('imageSourceInput');
+            var file = fileInput.files[0];
+
+            var formData = new FormData();
+            formData.append('file', file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Product/SetImage', true);
+            xhr.onload = function () {
+                if (xhr.status == 200) {
+                    fileName = xhr.responseText;
+
+                    document.getElementById('imageSourceBind').value = fileName;
+
+                    var forDisplay = window.location.protocol + '//' + window.location.host + fileName.substring(1);
+                    document.getElementById('imageSourceImg').src = forDisplay;
+                } else {
+                    toastr.error(xhr.responseText);
+                    console.error('Failed to upload file.');
+                }
+            };
+
+            xhr.send(formData);
+        }
+
+        function toggleCategory(id) {
+            console.log('Toggling category...')
+            $.ajax({
+                url: '/Product/ToggleCategory',
+                type: 'GET',
+                data: { id: id },
+                success: function (result) {
+                    console.log('Toggle success.');
+                    $('#categoryToggler').html(result);
+                },
+                error: function () {
+                    console.log('Toggle failed.');
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,18 @@
+﻿@model CategoryStateManager
+
+<div class="d-flex border flex-wrap">
+    @foreach (CategoryDto category in Model.GetCategories())
+    {
+        bool isExist = Model?.HasCategory(category.Id) ?? false;
+        string color = isExist ? "bg-success" : "bg-light";
+        string icon = isExist ? "bi-check-lg" : "bi-x-lg";
+        string textColor = isExist ? "text-light" : "text-secondary";
+
+        <a class="submit-button" data-value="@category.Id" onclick="toggleCategory(@category.Id)">
+            <span class="badge rounded-pill p-2 m-2 me-0 form-group @color @textColor" style="cursor: pointer">
+                <i class="bi @(icon)"></i>
+                <span class="me-2 ms-2">@category.Name</span>
+            </span>
+        </a>
+    }
+</div>

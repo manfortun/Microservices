@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container text-center">
+    <div class="col-form-label mt-4 mb-4 d-flex col-md-5">
+        <input type="text" class="form-control" placeholder="Looking for something?" oninput="search()" id="searchBox" />
+    </div>
+    <div id="itemsList"></div>
+</div>
+@section Scripts {
+    <script>
+        window.onload = function () {
+            console.log('Loading home page');
+            getItems(null);
+        }
+
+        function getItems(pageNo) {
+            $.ajax({
+                url: '/Home/GetItems',
+                type: 'GET',
+                data: { pageNo: pageNo },
+                success: function (result) {
+                    $('#itemsList').html(result);
+                    console.log('Displaying items.');
+                },
+                error: function () {
+                    console.log('Something went wrong on obtaining the products.');
+                }
+            });
+        }
+
+        function deleteProduct() {
+            return confirm('Are you sure you want to delete this item?');
+        }
+
+        function addtocart(id) {
+            $.ajax({
+                url: '/Product/AddToBasket',
+                type: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    toastr.success('Added ' + result + ' to cart');
+                },
+                error: function () {
+                    console.log('Error occured.');
+                }
+            });
+        }
+
+        function search() {
+            var searchString = document.getElementById('searchBox').value;
+
+            $.ajax({
+                url: '/Home/Search',
+                type: 'GET',
+                data: { searchString },
+                success: function (result) {
+                    $('#itemsList').html(result);
+                },
+                error: function () {
+                    console.log('Something went wrong.');
+                }
+            });
+        }
+    </script>
+}

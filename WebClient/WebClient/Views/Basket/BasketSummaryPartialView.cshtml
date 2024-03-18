@@ -1,0 +1,76 @@
+﻿@model BasketService
+
+@{
+    const string FORMAT = "N2";
+    string editBtnProp = Model.OnEditMode ? "" : "d-none";
+    double totalNumOfItems = Model.GetNoOfItems();
+}
+
+<div class="mb-5 p-0">
+    <div class="container-fluid p-2">
+        <h1>Check out your items.</h1>
+    </div>
+</div>
+
+<div class="col d-flex flex-column mb-4" id="col2">
+    <div class="d-flex mb-1">
+        <label class="text-uppercase flex-grow-1">Your Order</label>
+        @if (Model.OnEditMode)
+        {
+            <button onclick="toggleEditMode(false, false)" class="text-uppercase btn btn-sm" id="toggleBtnCancel">Cancel</button>
+            <button onclick="toggleEditMode(false, true)" class="btn btn-warning"><i class="bi bi-floppy me-2"></i>Save</button>
+        }
+        else
+        {
+            <button onclick="toggleEditMode(true, true)" class="btn btn-primary"><i class="bi bi-pencil me-2"></i>Edit</button>
+        }
+    </div>
+    <ul class="list-group" style="min-width: 450px; width: auto">
+        @foreach (ReadPurchaseDto cart in Model.GetBasket())
+        {
+            <li class="list-group-item text-secondary">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="text-primary-emphasis">
+                            <b>@cart.Product.Name</b>
+                        </div>
+                    </div>
+
+                    <div class="col justify-content-center align-items-center text-center d-flex">
+                        <button onclick="modifyCountClicked(@cart.ProductId, '@cart.OwnerId', @cart.Quantity - 1)" class="btn btn-sm bg-danger @editBtnProp">-</button>
+                        <h5 style="min-width: 50px"><b>@cart.Quantity</b></h5>
+                        <button onclick="modifyCountClicked(@cart.ProductId, '@cart.OwnerId', @cart.Quantity + 1)" class="btn btn-sm bg-success @editBtnProp">+</button>
+                    </div>
+
+                    <div class="col text-end align-items-center">
+                        <b>@Model.GetProductTotal(cart.ProductId).ToString(FORMAT)</b>
+                    </div>
+                </div>
+            </li>
+        }
+
+        <li class="list-group-item">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h5>
+                        <b>Total</b>
+                    </h5>
+                    <small class="text-secondary">
+                    </small>
+                </div>
+                <div class="col justify-content-center align-items-center text-center">
+                    <h5><b>@totalNumOfItems</b><div class="text-secondary" style="font-size: 10px">@(totalNumOfItems > 1 ? "items" : "item")</div></h5>
+                </div>
+                <div class="col text-end align-items-center">
+                    <h5><b>@Model.GetBasketTotal().ToString(FORMAT)</b></h5>
+                </div>
+            </div>
+        </li>
+
+        <div class="container d-flex p-0 mt-4 justify-content-md-end">
+            <button type="button" class="btn flex-grow-1 flex-md-grow-0 text-md-end ps-5 pe-5 @(Model.OnEditMode ? "disabled btn-outline-secondary" : "btn-warning")"
+            id="checkoutButton" onclick="checkout()">CHECKOUT</button>
+        </div>
+    </ul>
+</div>
+

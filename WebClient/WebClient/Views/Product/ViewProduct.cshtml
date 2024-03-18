@@ -1,0 +1,68 @@
+﻿@model ProductDto
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container col-md-6 col-lg-5 mt-5 border rounded p-3">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mx-auto d-block m-3 position-relative" style="height: 200px; width: 100%;">
+        <img class="card-img" height="200px" style="object-fit:contain;" id="imageSourceImg" src="@(string.IsNullOrEmpty(Model.ImageSource) ? "~/images/no-image.jpg" : Model.ImageSource)" asp-append-version="true" />
+    </div>
+
+    <div class="container text-center">
+        <h3>@Model.Name</h3>
+        <h6>Php @Model.Price.ToString("N2")</h6>
+        <p>@Model.Description</p>
+    </div>
+
+    <label>Categories: <small class="text-secondary">@(string.Join(", ", Model.Category?.Select(c => c.Category?.Name) ?? ["No category"]))</small></label>
+
+    <div class="d-grid gap-2 d-xl-flex flex-row-reverse justify-content-xl-start mt-4">
+        <form method="post" asp-controller="product" asp-action="deleteproduct" asp-route-id="@Model.Id"
+              onsubmit="return deleteProduct()" class="flex-grow-1 text-center text-xl-end">
+            <button class="badge rounded-pill border-0 p-2 highlightonhover me-1" onclick="addtocart(@Model.Id)" title="Add to cart" type="button">
+                <i class="bi bi-plus" style="font-size: 20px"></i>
+            </button>
+            @if (User.IsInRole(nameof(Role.Seller)) || User.IsInRole(nameof(Role.Admin)))
+            {
+                <a class="badge rounded-pill border-0 p-2 me-1 highlightonhover" title="Edit product"
+                   asp-controller="product" asp-action="edit" asp-route-id="@Model.Id">
+                    <i class="bi bi-pencil" style="font-size: 20px"></i>
+                </a>
+                <button class="badge rounded-pill border-0 p-2 highlightonhover" title="Delete" type="submit">
+                    <i class="bi bi-trash" style="font-size: 20px"></i>
+                </button>
+            }
+        </form>
+        <a type="submit" asp-controller="home" asp-action="index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Go back</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+    <script>
+
+        function deleteProduct() {
+            return confirm('Are you sure you want to delete this item?');
+        }
+
+        function addtocart(id) {
+            $.ajax({
+                url: '/Product/AddToBasket',
+                type: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    toastr.success('Added ' + result + ' to cart');
+                },
+                error: function () {
+                    console.log('Error occured.');
+                }
+            });
+        }
+    </script>
+}

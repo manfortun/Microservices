@@ -1,0 +1,79 @@
+﻿@model PagingService
+
+<!-- Main content-->
+<div class="card-deck d-flex flex-wrap justify-content-start ps-0">
+    @foreach (ProductDto p in Model.Get())
+    {
+        <div class="card position-relative me-3 mb-3" style="width: 180px; min-height: 200px" title="@p.Name">
+
+            <div class="card-body text-center position-relative pb-0">
+                <img class="card-img" height="150px" style="object-fit:cover;" src="@(string.IsNullOrEmpty(p.ImageSource) ? "~/images/no-image.jpg" : p.ImageSource)" asp-append-version="true" />
+                <h6 class="card-title mt-4 mb-1 text-primary-emphasis overflow-hidden" style="white-space:nowrap; text-overflow: ellipsis">@p.Name</h6>
+                <div class="row">
+                    @* <small class="text-body-tertiary overflow-hidden" style="font-size: 12px; white-space: nowrap; text-overflow: ellipsis">
+                @p.GetCategoriesFormattedString()
+                </small> *@
+                    <small class="card-text text-body-tertiary">
+                        Php @p.Price.ToString("N2")
+                    </small>
+                </div>
+
+                <div class="appear-on-hover position-absolute top-0 end-0" style="height: 100%;width: 100%; overflow: clip">
+                    <form method="post" asp-controller="product" asp-action="viewproduct" asp-route-id="@p.Id"
+                            style="height: 100%; width: 100%" class="position-absolute" onclick="this.submit()" title="Click to view"></form>
+                    <div class="position-absolute top-0 end-0 m-1">
+                        @if (User.IsInRole(nameof(Role.Seller)) || User.IsInRole(nameof(Role.Admin)))
+                        {
+                            <form method="post" asp-controller="product" asp-action="deleteproduct" asp-route-id="@p.Id"
+                                    onsubmit="return deleteProduct()" class="d-flex justify-content-end">
+                                <a class="badge rounded-pill border-0 p-2 me-1 shadow" style="background-color: buttonface" title="Edit product"
+                                    asp-controller="product" asp-action="edit" asp-route-id="@p.Id">
+                                    <i class="bi bi-pencil text-primary" style="font-size: 20px"></i>
+                                </a>
+                                <button class="badge rounded-pill border-0 p-2 shadow" title="Delete">
+                                    <i class="bi bi-trash text-danger" style="font-size: 20px"></i>
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body m-2">
+                <button class="badge rounded-pill border-0 p-2 highlightonhover" onclick="addtocart(@p.Id)" title="Add to cart">
+                    <i class="bi bi-plus" style="font-size: 20px"></i>
+                </button>
+            </div>
+
+        </div>
+    }
+</div>
+
+<!-- Pagination-->
+<div>
+    @if (Model != null && Model.Get().Any())
+    {
+        <ul class="pagination pagination-sm">
+            <li class="page-item @(Model.ActivePage <= 1 ? "disabled" : "")">
+                <a class="page-link"
+                   href="#" onclick="getItems(@Model.ActivePage - 1)">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+
+            @foreach (int pageNo in Enumerable.Range(1, Model.NoOfPages))
+            {
+                <li class="page-item @(Model.ActivePage == pageNo ? "active" : "")">
+                    <a class="page-link" href="#" onclick="getItems(@pageNo)">@pageNo</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.ActivePage >= Model.NoOfPages ? "disabled" : "")">
+                <a class="page-link"
+                   href="#" onclick="getItems(@Model.ActivePage + 1)">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    }
+</div>
