@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using WebClient.DTOs;
 using WebClient.Models;
 using WebClient.Services;
@@ -12,15 +11,15 @@ public class ProductController : Controller
 {
     private static CategoryStateManager _categoryStateManager;
     private readonly IHttpServiceWrapper _catalogService;
-    private readonly IHttpServiceWrapper _authService
-        ;
-    private readonly AuthService _localAuthService;
+    private readonly IUploadService<IFormFile> _uploadService;
 
-    public ProductController(IConfiguration config, AuthService localAuthService)
+    public ProductController(
+        IConfiguration config,
+        AuthService authService,
+        IUploadService<IFormFile> uploadService)
     {
-        _catalogService = new HttpService<HttpCatalogService>(config, localAuthService);
-        _authService = new HttpService<HttpAuthService>(config, localAuthService);
-        _localAuthService = localAuthService;
+        _catalogService = new HttpService<HttpCatalogService>(config, authService);
+        _uploadService = uploadService;
     }
 
     [HttpPost]
@@ -121,7 +120,7 @@ public class ProductController : Controller
                 Quantity = 1
             };
 
-            HttpResponseMessage? addResponse = await _catalogService.PostAsync(HttpContext, createPurchase, "AddPurchase");
+            _ = await _catalogService.PostAsync(HttpContext, createPurchase, "AddPurchase");
         }
         else
         {
@@ -198,6 +197,18 @@ public class ProductController : Controller
         return PartialView("CategoryTogglePartialView", _categoryStateManager);
     }
 
+    [HttpPost]
+    public async Task<IActionResult> SetImage(IFormFile file)
+    {
+        string finalizedFileName = _uploadService.GetAvailableFileName(file.FileName);
+
+        if (!await _uploadService.Upload(file))
+        {
+            return BadRequest("Please select a correct image format.");
+        }
+
+        return Content($"~/images/{finalizedFileName}");
+    }
 
     private async Task<DeserializationResult<T>> SaveObjectToCatalogService<T>(object obj, params string[] endpoints)
         where T : class
