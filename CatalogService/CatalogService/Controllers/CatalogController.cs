@@ -18,7 +18,10 @@ public class CatalogController : ControllerBase
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly ICommandDataClient _commandDataClient;
 
-    public CatalogController(AppDbContext context, IMapper mapper, IHttpContextAccessor contextAccessor, ICommandDataClient commandDataClient)
+    public CatalogController(AppDbContext context,
+        IMapper mapper,
+        IHttpContextAccessor contextAccessor,
+        ICommandDataClient commandDataClient)
     {
         _unitOfWork = new UnitOfWork(context);
         _mapper = mapper;
@@ -26,12 +29,20 @@ public class CatalogController : ControllerBase
         _commandDataClient = commandDataClient;
     }
 
+    /// <summary>
+    /// For testing connection
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public IActionResult TestConnection()
     {
         return Ok();
     }
 
+    /// <summary>
+    /// Obtain all products from the database
+    /// </summary>
+    /// <returns></returns>
     [HttpGet(nameof(GetProducts))]
     public ActionResult<IEnumerable<ProductReadDto>> GetProducts()
     {
@@ -42,6 +53,11 @@ public class CatalogController : ControllerBase
         return Ok(productDtos);
     }
 
+    /// <summary>
+    /// Get a product of specific <paramref name="id"/>
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet(nameof(GetProductById))]
     public ActionResult<ProductReadDto> GetProductById(int id)
     {
@@ -58,6 +74,11 @@ public class CatalogController : ControllerBase
         return Ok(productDto);
     }
 
+    /// <summary>
+    /// Insert a <paramref name="product"/> into the database
+    /// </summary>
+    /// <param name="product"></param>
+    /// <returns></returns>
     [HttpPost(nameof(CreateProduct))]
     public ActionResult<ProductReadDto> CreateProduct(Product product)
     {
@@ -73,6 +94,11 @@ public class CatalogController : ControllerBase
         return Ok(productRead);
     }
 
+    /// <summary>
+    /// Insert a <paramref name="category"/> into the database
+    /// </summary>
+    /// <param name="category"></param>
+    /// <returns></returns>
     [HttpPost(nameof(AddCategory))]
     public ActionResult<IEnumerable<CategoryReadDto>> AddCategory(Category category)
     {
@@ -92,6 +118,11 @@ public class CatalogController : ControllerBase
         return BadRequest("Can't add the category.");
     }
 
+    /// <summary>
+    /// Get a category of specific <paramref name="id"/>
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet(nameof(GetCategory))]
     public ActionResult<CategoryReadDto> GetCategory(int id)
     {
@@ -105,6 +136,11 @@ public class CatalogController : ControllerBase
         return Ok(category);
     }
 
+    /// <summary>
+    /// Edits the <paramref name="category"/>
+    /// </summary>
+    /// <param name="category"></param>
+    /// <returns></returns>
     [HttpPost(nameof(EditCategory))]
     public ActionResult<string> EditCategory(Category category)
     {
@@ -123,6 +159,11 @@ public class CatalogController : ControllerBase
         return BadRequest("Unable to save category");
     }
 
+    /// <summary>
+    /// Retrieves the categories of a product of specific <paramref name="productId"/>
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <returns></returns>
     [HttpGet(nameof(GetCategories))]
     public ActionResult<IEnumerable<CategoryReadDto>> GetCategories(int? productId)
     {
@@ -143,6 +184,11 @@ public class CatalogController : ControllerBase
         return Ok(categoryDtos);
     }
 
+    /// <summary>
+    /// Removes a category of <paramref name="id"/> from the database
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete(nameof(DeleteCategory))]
     public ActionResult<string> DeleteCategory(int id)
     {
@@ -156,6 +202,11 @@ public class CatalogController : ControllerBase
         return NotFound();
     }
 
+    /// <summary>
+    /// Updates a <paramref name="product"/> in the database
+    /// </summary>
+    /// <param name="product"></param>
+    /// <returns></returns>
     [HttpPost(nameof(SaveProduct))]
     public ActionResult<ProductReadDto> SaveProduct(Product product)
     {
@@ -173,6 +224,11 @@ public class CatalogController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Saves an enumerable of <paramref name="categories"/> into the database
+    /// </summary>
+    /// <param name="categories"></param>
+    /// <returns></returns>
     [HttpPost(nameof(SaveProductCategories))]
     public ActionResult<string> SaveProductCategories(IEnumerable<ProductCategoryReadDto> categories)
     {
@@ -204,6 +260,11 @@ public class CatalogController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Removes a product of specific <paramref name="id"/>
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete(nameof(DeleteProduct))]
     public ActionResult<string> DeleteProduct(int id)
     {
@@ -217,6 +278,10 @@ public class CatalogController : ControllerBase
         return NotFound();
     }
 
+    /// <summary>
+    /// Obtains the basket of current user. The JWT token must be included in the request header.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet(nameof(GetBasket))]
     public async Task<ActionResult<IEnumerable<PurchaseDto>>> GetBasket()
     {
@@ -227,6 +292,12 @@ public class CatalogController : ControllerBase
         return Ok(purchasesDto);
     }
 
+    /// <summary>
+    /// Obtains the purchase object of current user whose product id = <paramref name="productId"/>.
+    /// The JWT token must be included in the request header.
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <returns></returns>
     [HttpGet(nameof(GetPurchase))]
     public async Task<ActionResult<PurchaseDto>> GetPurchase(int productId)
     {
@@ -236,6 +307,12 @@ public class CatalogController : ControllerBase
         return Ok(_mapper.Map<PurchaseDto>(purchase));
     }
 
+    /// <summary>
+    /// Adds a purchase object to the current user.
+    /// The JWT token must be included in the request header.
+    /// </summary>
+    /// <param name="purchase"></param>
+    /// <returns></returns>
     [HttpPost(nameof(AddPurchase))]
     public async Task<ActionResult<Purchase>> AddPurchase(PurchaseDto purchase)
     {
@@ -254,6 +331,12 @@ public class CatalogController : ControllerBase
         return BadRequest("Unable to save purchase.");
     }
 
+    /// <summary>
+    /// Updates a purchase object of a user.
+    /// The JWT token must be included in the request header.
+    /// </summary>
+    /// <param name="purchase"></param>
+    /// <returns></returns>
     [HttpPost(nameof(SavePurchase))]
     public ActionResult<Purchase> SavePurchase(PurchaseDto purchase)
     {
@@ -268,12 +351,17 @@ public class CatalogController : ControllerBase
         return BadRequest("Unable to save purchase.");
     }
 
+    /// <summary>
+    /// Inserts an enumerable of <paramref name="purchases"/> into the database.
+    /// </summary>
+    /// <param name="purchases"></param>
+    /// <returns></returns>
     [HttpPost(nameof(SaveBasket))]
     public ActionResult<string> SaveBasket(IEnumerable<Purchase> purchases)
     {
         foreach (var purchase in purchases)
         {
-            purchase.Product = null;
+            purchase.Product = default!;
             _ = _unitOfWork.Purchases.Insert(purchase);
         }
 
@@ -282,6 +370,11 @@ public class CatalogController : ControllerBase
         return Ok("Basket saved.");
     }
 
+    /// <summary>
+    /// Removes a basket of a user.
+    /// The JWT token must be included in the request header.
+    /// </summary>
+    /// <returns></returns>
     [HttpDelete(nameof(DeleteBasket))]
     public async Task<ActionResult<string>> DeleteBasket()
     {
@@ -298,6 +391,11 @@ public class CatalogController : ControllerBase
         return Ok("Basket deleted.");
     }
 
+    /// <summary>
+    /// Determines if a <paramref name="category"/> name is unique.
+    /// </summary>
+    /// <param name="category"></param>
+    /// <returns></returns>
     private bool IsUnique(Category category)
     {
         string[] names = _unitOfWork.Categories
@@ -310,6 +408,10 @@ public class CatalogController : ControllerBase
         return !normalizedNames.Contains(category.Name);
     }
 
+    /// <summary>
+    /// Retrieves the user ID from the request header.
+    /// </summary>
+    /// <returns></returns>
     private async Task<string> GetUserIdFromHeader()
     {
         var request = _contextAccessor.HttpContext?.Request;
