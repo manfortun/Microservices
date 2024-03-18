@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
-using System.Security.Claims;
 using WebClient.DTOs;
 using WebClient.Services;
 using WebClient.Services.HttpClients;
@@ -86,7 +84,7 @@ public class BasketController : Controller
     /// </summary>
     /// <returns></returns>
     private async Task<bool> MergeDbBasketWithLocalBasket()
-    { 
+    {
         HttpResponseMessage? response = await _catalogService.DeleteAsync(HttpContext, "DeleteBasket");
         var content = await HttpContentDeserializer.Deserialize<string>(response);
 
@@ -125,7 +123,7 @@ public class BasketController : Controller
         {
             _localBasket.AddNewBasket(content.Content);
         }
-            
+
         return content.Successful;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
 using WebClient.DTOs;
 using WebClient.Models;
 using WebClient.Services;
