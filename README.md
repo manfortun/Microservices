@@ -7,7 +7,9 @@ This is an e-commerce web application that allows users to browse, search for, a
 
 ## Microservices
 This system contains 2 services:
+
 (1) *AuthService* - responsible for handling account-related requests such as logging in, change password, authentication
+
 (2) *CatalogService* - handles all requests related to products, categories, and purchases.
 
 ## Deployment
