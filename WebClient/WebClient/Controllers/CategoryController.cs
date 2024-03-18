@@ -9,7 +9,7 @@ namespace WebClient.Controllers;
 
 public class CategoryController : Controller
 {
-    private readonly IHttpService _httpService;
+    private readonly IHttpServiceWrapper _httpService;
     public CategoryController(IConfiguration config, AuthService authService)
     {
         _httpService = new HttpService<HttpCatalogService>(config, authService);

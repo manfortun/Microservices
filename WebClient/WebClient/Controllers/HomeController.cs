@@ -10,7 +10,7 @@ namespace WebClient.Controllers;
 public class HomeController : Controller
 {
     private static readonly PagingService _pagingService = new PagingService(12);
-    private readonly IHttpService _httpService;
+    private readonly IHttpServiceWrapper _httpService;
 
     public HomeController(IConfiguration config, AuthService authService)
     {

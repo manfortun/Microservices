@@ -2,7 +2,7 @@
 
 namespace WebClient.Services.HttpClients;
 
-public class HttpAuthService : IHttpClient
+public class HttpAuthService : IHttpService
 {
     public string Name => "AuthService";
 

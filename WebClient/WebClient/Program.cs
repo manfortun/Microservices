@@ -60,7 +60,7 @@ using (var serviceScope = builder.Services.BuildServiceProvider().CreateScope())
 {
     var authService = serviceScope.ServiceProvider.GetService<AuthService>();
 
-    List<IHttpService> httpServices = new List<IHttpService>
+    List<IHttpServiceWrapper> httpServices = new List<IHttpServiceWrapper>
     {
         new HttpService<HttpAuthService>(builder.Configuration, authService),
         new HttpService<HttpCatalogService>(builder.Configuration, authService),
@@ -69,7 +69,7 @@ using (var serviceScope = builder.Services.BuildServiceProvider().CreateScope())
     foreach (var service in httpServices)
     {
         string serviceStatus = await service.IsRunning() ? "UP" : "DOWN";
-        Console.WriteLine($"\t{service.Client.FriendlyName} ({service}): {serviceStatus}");
+        Console.WriteLine($"\t{service.Service.FriendlyName} ({service}): {serviceStatus}");
     }
 }
 Console.WriteLine("-----------------------------------------------");

@@ -5,13 +5,13 @@ using WebClient.Services.Interfaces;
 
 namespace WebClient.Services;
 
-public class HttpService<T> : IHttpService where T : IHttpClient
+public class HttpService<T> : IHttpServiceWrapper where T : IHttpService
 {
     private readonly T _client = Activator.CreateInstance<T>();
     private readonly IConfiguration _config;
     private readonly AuthService _authService;
 
-    public IHttpClient Client => _client;
+    public IHttpService Service => _client;
 
     public HttpService(IConfiguration config, AuthService authService)
     {
@@ -107,7 +107,7 @@ public class HttpService<T> : IHttpService where T : IHttpClient
         return default!;
     }
 
-    public virtual IHttpService AddParameter(string name, object value)
+    public virtual IHttpServiceWrapper AddParameter(string name, object value)
     {
         var parameterizedService = new ParameterizedHttpService<T>(_config, _authService);
         parameterizedService.AddParameter(name, value);

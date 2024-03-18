@@ -2,7 +2,7 @@
 
 namespace WebClient.Services.HttpClients;
 
-public class HttpCatalogService : IHttpClient
+public class HttpCatalogService : IHttpService
 {
     public string Name => "CatalogService";
 

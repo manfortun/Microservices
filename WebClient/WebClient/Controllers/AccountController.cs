@@ -13,7 +13,7 @@ namespace WebClient.Controllers;
 public class AccountController : Controller
 {
     private readonly IMapper _mapper;
-    private readonly IHttpService _httpService;
+    private readonly IHttpServiceWrapper _httpService;
     private readonly AuthService _authService;
 
     public AccountController(

@@ -10,8 +10,8 @@ namespace WebClient.Controllers;
 public class ProductController : Controller
 {
     private static CategoryStateManager _categoryStateManager;
-    private readonly IHttpService _catalogService;
-    private readonly IHttpService _authService
+    private readonly IHttpServiceWrapper _catalogService;
+    private readonly IHttpServiceWrapper _authService
         ;
     private readonly AuthService _localAuthService;
 

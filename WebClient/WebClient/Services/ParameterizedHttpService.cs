@@ -4,7 +4,7 @@ using WebClient.Services.Interfaces;
 
 namespace WebClient.Services;
 
-public class ParameterizedHttpService<T> : HttpService<T> where T : IHttpClient
+public class ParameterizedHttpService<T> : HttpService<T> where T : IHttpService
 {
     private readonly Dictionary<string, object> _queryParameters = [];
     public ParameterizedHttpService(IConfiguration config, AuthService authService) : base(config, authService) { }

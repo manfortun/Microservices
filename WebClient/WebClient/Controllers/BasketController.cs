@@ -8,7 +8,7 @@ namespace WebClient.Controllers;
 
 public class BasketController : Controller
 {
-    private readonly IHttpService _catalogService;
+    private readonly IHttpServiceWrapper _catalogService;
     private static BasketService _localBasket;
     public BasketController(IConfiguration config, AuthService localAuthService)
     {

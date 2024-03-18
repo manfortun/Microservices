@@ -26,6 +26,11 @@ public class AuthService
         await context.SignInAsync(Scheme, principal);
     }
 
+    /// <summary>
+    /// Signs the current user out
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public async Task SignOutAsync(HttpContext context)
     {
         await context.SignOutAsync(Scheme);
@@ -89,6 +94,11 @@ public class AuthService
         }
     }
 
+    /// <summary>
+    /// Retrieves the token from the cookies
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public string? GetToken(HttpContext context)
     {
         return context.Request.Cookies[TOKEN_NAME];

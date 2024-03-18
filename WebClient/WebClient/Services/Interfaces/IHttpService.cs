@@ -2,10 +2,13 @@
 
 public interface IHttpService
 {
-    IHttpClient Client { get; }
-    Task<HttpResponseMessage?> PostAsync(HttpContext context, object content, params string[] endpoints);
-    Task<HttpResponseMessage?> GetAsync(HttpContext context, params string[] endpoints);
-    Task<HttpResponseMessage?> DeleteAsync(HttpContext context, params string[] endpoints);
-    IHttpService AddParameter(string name, object value);
-    Task<bool> IsRunning();
+    /// <summary>
+    /// Connection name of the service
+    /// </summary>
+    string Name { get; }
+
+    /// <summary>
+    /// Friendly name of the service
+    /// </summary>
+    string FriendlyName { get; }
 }
