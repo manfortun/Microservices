@@ -8,10 +8,15 @@ This is an e-commerce web application that allows users to browse, search for, a
 ## Deployment
 ##### Download the "K8S" folder and run the following commands:
 `kubectl apply -f authservice-depl.yaml`
+
 `kubectl apply -f catalogservice-depl.yaml`
+
 `kubectl apply -f ingress-srv.yaml`
+
 `kubectl apply -f local-pvc.yaml`
+
 `kubectl apply -f mssql-depl.yaml`
+
 `kubectl apply -f rabbitmq-depl.yaml`
 
 ##### Download BrowseBay folder and run.
