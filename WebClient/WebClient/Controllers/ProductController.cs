@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using WebClient.DTOs;
 using WebClient.Models;
 using WebClient.Services;
@@ -115,6 +116,7 @@ public class ProductController : Controller
         {
             var createPurchase = new PurchaseDto
             {
+                OwnerId = string.Empty, // it will be set on the server side
                 ProductId = product.Id,
                 Quantity = 1
             };

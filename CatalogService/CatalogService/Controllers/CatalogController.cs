@@ -314,7 +314,7 @@ public class CatalogController : ControllerBase
     /// <param name="purchase"></param>
     /// <returns></returns>
     [HttpPost(nameof(AddPurchase))]
-    public async Task<ActionResult<Purchase>> AddPurchase(PurchaseDto purchase)
+    public async Task<ActionResult<Purchase>> AddPurchase(CreatePurchaseDto purchase)
     {
         string? ownerId = await GetUserIdFromHeader();
 

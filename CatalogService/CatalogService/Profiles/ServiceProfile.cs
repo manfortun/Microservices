@@ -21,6 +21,7 @@ public class ServiceProfile : Profile
 
         //Purchase
         CreateMap<PurchaseDto, Purchase>();
+        CreateMap<CreatePurchaseDto, Purchase>();
         CreateMap<Purchase, PurchaseDto>();
     }
 }

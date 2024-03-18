@@ -39,35 +39,6 @@ public class AuthService
     }
 
     /// <summary>
-    /// Determines if a user is authorized
-    /// </summary>
-    /// <param name="context"></param>
-    /// <param name="roleName"></param>
-    /// <returns></returns>
-    public async Task<bool> IsAuthorizedAsync(HttpContext context, string roleName = "")
-    {
-        if (context is null)
-        {
-            return false;
-        }
-
-        string? token = GetToken(context);
-        bool isAuthorized = !string.IsNullOrEmpty(token);
-
-        if (isAuthorized)
-        {
-            await RefreshTokenAsync(context);
-
-            if (!string.IsNullOrEmpty(roleName))
-            {
-                isAuthorized &= HasRole(token, roleName);
-            }
-        }
-
-        return isAuthorized;
-    }
-
-    /// <summary>
     /// Obtains the claims of the <paramref name="token"/>
     /// </summary>
     /// <param name="token"></param>
@@ -102,25 +73,5 @@ public class AuthService
     public string? GetToken(HttpContext context)
     {
         return context.Request.Cookies[TOKEN_NAME];
-    }
-
-    /// <summary>
-    /// Checks if the <paramref name="token"/> has the role of <paramref name="roleName"/>
-    /// </summary>
-    /// <param name="token"></param>
-    /// <param name="roleName"></param>
-    /// <returns></returns>
-    private bool HasRole(string? token, string roleName)
-    {
-        if (string.IsNullOrEmpty(token))
-        {
-            return false;
-        }
-
-        var claims = GetClaims(token);
-
-        var roleClaims = claims.Where(c => c.Type == ClaimTypes.Role);
-
-        return roleClaims.Any(roles => roles.ValueType == roleName);
     }
 }
