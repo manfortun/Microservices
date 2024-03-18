@@ -14,6 +14,11 @@ public class JwtService
         _config = config;
     }
 
+    /// <summary>
+    /// Create JWT Token from <paramref name="username"/>
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
     public string GenerateJwtToken(string username)
     {
         var claims = new List<Claim>
@@ -24,6 +29,12 @@ public class JwtService
         return GenerateJwtToken(claims);
     }
 
+    /// <summary>
+    /// Create JWT token from <paramref name="claims"/>
+    /// </summary>
+    /// <param name="claims"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public string GenerateJwtToken(IEnumerable<Claim> claims)
     {
         string jwtKey = _config["Jwt:SecretKey"] ?? throw new InvalidOperationException("No secret key in application settings.");
@@ -34,6 +45,13 @@ public class JwtService
         return GenerateJwtToken(credentials, claims);
     }
 
+    /// <summary>
+    /// Create JWT token from <paramref name="credentials"/> and <paramref name="claims"/>
+    /// </summary>
+    /// <param name="credentials"></param>
+    /// <param name="claims"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public string GenerateJwtToken(SigningCredentials credentials, IEnumerable<Claim> claims)
     {
         ArgumentNullException.ThrowIfNull(credentials);
@@ -47,24 +65,5 @@ public class JwtService
             );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public string GetIdFromJwtToken(string token)
-    {
-        if (string.IsNullOrEmpty(token))
-            throw new ArgumentNullException(nameof(token));
-
-        var handler = new JwtSecurityTokenHandler();
-        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-        if (jsonToken == null)
-            throw new ArgumentException("Invalid JWT token");
-
-        var userIdClaim = jsonToken.Claims.FirstOrDefault(claim => claim.Type == "sub" || claim.Type == "id");
-
-        if (userIdClaim == null || string.IsNullOrEmpty(userIdClaim.Value))
-            throw new InvalidOperationException("User ID claim not found in token");
-
-        return userIdClaim.Value;
     }
 }

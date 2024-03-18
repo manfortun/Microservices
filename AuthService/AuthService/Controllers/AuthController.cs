@@ -40,15 +40,25 @@ public class AuthController : ControllerBase
         _validationService = validationService;
     }
 
+    /// <summary>
+    /// For testing connection
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public IActionResult TestConnection()
     {
         return Ok();
     }
 
+    /// <summary>
+    /// Obtain the User ID from the JWT token
+    /// </summary>
+    /// <param name="token">JWT token</param>
+    /// <returns></returns>
     [HttpGet(nameof(GetId))]
     public ActionResult<string> GetId(string token)
     {
+        // separate the authentication scheme and the actual token
         string splitToken = token.ToString().Split(' ', 2)[1];
 
         var handler = new JwtSecurityTokenHandler();
@@ -59,13 +69,21 @@ public class AuthController : ControllerBase
             return Unauthorized();
         }
 
+        // obtain id from user claims
         string id = jsonToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? default!;
         return id;
     }
 
+    /// <summary>
+    /// Change password of user with ID = <paramref name="ownerId"/>
+    /// </summary>
+    /// <param name="passwordChange"></param>
+    /// <param name="ownerId"></param>
+    /// <returns></returns>
     [HttpPost(nameof(ChangePassword))]
     public async Task<ActionResult<string>> ChangePassword(PasswordChangeData passwordChange, string ownerId)
     {
+        // check if the argument is valid
         bool isValid = _validationService.IsValid(passwordChange, out List<ValidationResult> validationResults);
 
         if (!isValid)
@@ -87,6 +105,11 @@ public class AuthController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="credentials"></param>
+    /// <returns></returns>
     [HttpPost(nameof(Login))]
     public async Task<ActionResult> Login(LoginCredentials credentials)
     {
@@ -97,6 +120,7 @@ public class AuthController : ControllerBase
             return BadRequest("The credentials provided is not valid.");
         }
 
+        // sign in
         SignInResult result = await _signInManager.PasswordSignInAsync(
             credentials.Email,
             credentials.Password,
@@ -107,6 +131,7 @@ public class AuthController : ControllerBase
         {
             try
             {
+                // if the user is able to sign in, generate and return JWT token
                 var identityUser = await _userManager.FindByEmailAsync(credentials.Email);
                 var principal = await _signInManager.CreateUserPrincipalAsync(identityUser);
 
@@ -122,6 +147,11 @@ public class AuthController : ControllerBase
         return Unauthorized("Invalid email address or password.");
     }
 
+    /// <summary>
+    /// Creates an account from the <paramref name="credentials"/>
+    /// </summary>
+    /// <param name="credentials"></param>
+    /// <returns></returns>
     [HttpPost(nameof(Register))]
     public async Task<ActionResult<string>> Register(RegisterCredentials credentials)
     {
@@ -132,8 +162,10 @@ public class AuthController : ControllerBase
             return BadRequest("The credentials provided is not valid.");
         }
 
+        // map the credentials into IdentityUser type
         var identityUser = _mapper.Map<IdentityUser>(credentials);
 
+        // create the account
         IdentityResult result = await _userManager
             .CreateAsync(
                 user: identityUser,
