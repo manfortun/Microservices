@@ -5,6 +5,12 @@ This is an e-commerce web application that allows users to browse, search for, a
 2. Seller - sellers can create their own products for listing in the market, and also buy products in the market
 3. Admin - admins can add/modify/remove categories. Admins can also do what sellers and buyers do.
 
+## Microservices
+This system contains 2 services:
+
+1. *AuthService* - responsible for handling account-related requests such as logging in, change password, authentication
+2. *CatalogService* - handles all requests related to products, categories, and purchases.
+
 ## Deployment
 ##### Download the "K8S" folder and run the following commands:
 `kubectl apply -f authservice-depl.yaml`
