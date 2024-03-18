@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/WebClient/.vs/WebClient/FileContentIndex
+/WebClient/.vs/WebClient/v17/.suo
+/WebClient/WebClient/obj/Debug/net8.0/project.razor.vs.bin
+/WebClient/WebClient/obj/Debug/net8.0/WebClient.AssemblyInfo.cs
+/WebClient/WebClient/obj/Debug/net8.0/WebClient.AssemblyInfoInputs.cache
+/WebClient/WebClient/obj/Debug/net8.0/WebClient.assets.cache
+/WebClient/WebClient/obj/Debug/net8.0/WebClient.GeneratedMSBuildEditorConfig.editorconfig
+/WebClient/WebClient/obj/project.assets.json
+/WebClient/WebClient/obj/project.nuget.cache
+/WebClient/WebClient/obj/WebClient.csproj.nuget.dgspec.json
