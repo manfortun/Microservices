@@ -186,10 +186,4 @@ public class AuthController : ControllerBase
 
         return Ok("User registered successfully!");
     }
-
-    [HttpGet("Info")]
-    public IActionResult GetAuthorizationInfo()
-    {
-        return Ok();
-    }
 }

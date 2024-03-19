@@ -68,16 +68,6 @@
   },
   {
     "ContainingType": "AuthService.Controllers.AuthController",
-    "Method": "GetAuthorizationInfo",
-    "RelativePath": "api/Auth/Info",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "AuthService.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/Login",
     "HttpMethod": "POST",

@@ -286,6 +286,12 @@ public class CatalogController : ControllerBase
     public async Task<ActionResult<IEnumerable<PurchaseDto>>> GetBasket()
     {
         string? ownerId = await GetUserIdFromHeader();
+
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            return Unauthorized();
+        }
+
         IEnumerable<Purchase> purchases = _unitOfWork.Purchases.Get(p => p.OwnerId == ownerId);
 
         var purchasesDto = _mapper.Map<IEnumerable<PurchaseDto>>(purchases);
@@ -302,6 +308,12 @@ public class CatalogController : ControllerBase
     public async Task<ActionResult<PurchaseDto>> GetPurchase(int productId)
     {
         string? ownerId = await GetUserIdFromHeader();
+
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            return Unauthorized();
+        }
+
         Purchase? purchase = _unitOfWork.Purchases.FindByKeys(ownerId, productId);
 
         return Ok(_mapper.Map<PurchaseDto>(purchase));
@@ -317,6 +329,11 @@ public class CatalogController : ControllerBase
     public async Task<ActionResult<Purchase>> AddPurchase(CreatePurchaseDto purchase)
     {
         string? ownerId = await GetUserIdFromHeader();
+
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            return Unauthorized();
+        }
 
         purchase.OwnerId = ownerId;
 
@@ -379,6 +396,12 @@ public class CatalogController : ControllerBase
     public async Task<ActionResult<string>> DeleteBasket()
     {
         string ownerId = await GetUserIdFromHeader();
+
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            return Unauthorized();
+        }
+
         IEnumerable<Purchase> purchases = _unitOfWork.Purchases.Get(p => p.OwnerId == ownerId);
 
         foreach (var purchase in purchases)
