@@ -1,7 +1,4 @@
-﻿using System.Text.Json;
-using System.Text;
-
-namespace CatalogService.SyncDataServices.Http;
+﻿namespace CatalogService.SyncDataServices.Http;
 
 public class HttpCommandDataClient : ICommandDataClient
 {
@@ -14,7 +11,7 @@ public class HttpCommandDataClient : ICommandDataClient
 
     public async Task<string> GetId(string token)
     {
-        using(HttpClient client = new HttpClient())
+        using (HttpClient client = new HttpClient())
         {
             var response = await client.GetAsync($"{_config.GetConnectionString("AuthServiceConnection")}/GetId?token={token}");
 

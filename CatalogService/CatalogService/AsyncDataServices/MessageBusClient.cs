@@ -1,7 +1,7 @@
 ﻿using CatalogService.DTOs;
 using RabbitMQ.Client;
-using System.Text.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace CatalogService.AsyncDataServices;
 

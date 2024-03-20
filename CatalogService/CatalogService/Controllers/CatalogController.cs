@@ -2,6 +2,7 @@
 using CatalogService.DataAccess;
 using CatalogService.DTOs;
 using CatalogService.Models;
+using CatalogService.Services;
 using CatalogService.SyncDataServices.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CatalogService.Controllers;
 
+[AuthHeaderFilter]
 [ApiController]
 [Route("api/[controller]")]
 public class CatalogController : ControllerBase
@@ -49,7 +51,7 @@ public class CatalogController : ControllerBase
         IEnumerable<Product> products = _unitOfWork.Products.Get(includeProperties: "Category");
 
         var productDtos = _mapper.Map<IEnumerable<ProductReadDto>>(products);
-        
+
         return Ok(productDtos);
     }
 
@@ -239,7 +241,7 @@ public class CatalogController : ControllerBase
             if (ids.Any())
             {
                 IEnumerable<ProductCategory> toDelete = _unitOfWork.ProductCategories.Get(pc => ids.Contains(pc.ProductId));
-        
+
                 foreach (var delete in toDelete)
                 {
                     _ = _unitOfWork.ProductCategories.Delete(delete);
